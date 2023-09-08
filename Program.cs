@@ -9,11 +9,13 @@ builder.Configuration
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables();
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 // Add services to the container.
 builder.Services.AddDbContext<LogDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddHostedService<CesiumLogUpdateService>();
+builder.Services.AddHostedService<OlmapLogUpdateService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

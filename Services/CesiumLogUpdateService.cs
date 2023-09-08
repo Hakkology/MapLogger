@@ -2,6 +2,7 @@ using MapLogger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,17 +30,19 @@ public class CesiumLogUpdateService : IHostedService, IDisposable
         using var scope = _serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<LogDbContext>();
 
-        var latestTimestamp = dbContext.cesiumLogEntries.Max(e => e.Timestamp);
-        var newLogs = ReadLogs().Where(log => log.Timestamp > latestTimestamp);
+        var latestTimestamp = dbContext.cesiumLogEntries.Any() ? 
+            dbContext.cesiumLogEntries.Max(e => e.Timestamp) : DateTime.MinValue;
+
+        var newLogs = ReadLogs(latestTimestamp);
 
         dbContext.cesiumLogEntries.AddRange(newLogs);
         dbContext.SaveChanges();
     }
 
 
-    private List<CesiumLogEntry> ReadLogs()
+    private List<CesiumLogEntry> ReadLogs(DateTime afterTimestamp)
     {
-        string logFilePath = "~/Loggers/cesium.txt"; // Provide the path to your log file.
+        string logFilePath = "Loggers/cesium.txt";
         var logs = new List<CesiumLogEntry>();
         
         foreach (var line in File.ReadAllLines(logFilePath))
@@ -48,9 +51,10 @@ public class CesiumLogUpdateService : IHostedService, IDisposable
             
             if (parts.Length != 3) continue; 
             
-            if (DateTime.TryParse(parts[0], out var timestamp) &&
-                double.TryParse(parts[1], out var longitude) &&
-                double.TryParse(parts[2], out var latitude))
+            if (DateTime.TryParse(parts[0], CultureInfo.InvariantCulture, DateTimeStyles.None, out var timestamp) &&
+                double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var longitude) &&
+                double.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out var latitude) &&
+                timestamp > afterTimestamp) // Only consider entries newer than the provided timestamp
             {
                 logs.Add(new CesiumLogEntry
                 {
@@ -63,6 +67,7 @@ public class CesiumLogUpdateService : IHostedService, IDisposable
 
         return logs;
     }
+
 
     public Task StopAsync(CancellationToken cancellationToken)
     {

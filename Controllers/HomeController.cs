@@ -30,7 +30,7 @@ public class HomeController : Controller
     [HttpPost]
     public ActionResult CoordinateLogger(string type, double longitude, double latitude)
     {
-        var timestamp = DateTime.Now;
+        var timestamp = DateTime.UtcNow;
         var logString = $"{timestamp},{longitude},{latitude}\n";
         System.IO.File.AppendAllText(_env.ContentRootPath + "/Loggers" + $"/{type}.txt", logString);
         return Json(new { Success = true });

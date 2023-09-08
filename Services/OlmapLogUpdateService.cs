@@ -2,6 +2,7 @@ using MapLogger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,17 +30,18 @@ public class OlmapLogUpdateService : IHostedService, IDisposable
         using var scope = _serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<LogDbContext>();
 
-        var latestTimestamp = dbContext.olmapLogEntries.Max(e => e.Timestamp);
-        var newLogs = ReadLogs().Where(log => log.Timestamp > latestTimestamp);
+        var latestTimestamp = dbContext.olmapLogEntries.Any() ? 
+            dbContext.olmapLogEntries.Max(e => e.Timestamp) : DateTime.MinValue;
+
+        var newLogs = ReadLogs(latestTimestamp);
 
         dbContext.olmapLogEntries.AddRange(newLogs);
         dbContext.SaveChanges();
     }
 
-
-    private List<OlmapLogEntry> ReadLogs()
+    private List<OlmapLogEntry> ReadLogs(DateTime afterTimestamp)
     {
-        string logFilePath = "~/Loggers/olmap.txt"; // Provide the path to your log file.
+        string logFilePath = "Loggers/olmap.txt";
         var logs = new List<OlmapLogEntry>();
         
         foreach (var line in File.ReadAllLines(logFilePath))
@@ -48,9 +50,10 @@ public class OlmapLogUpdateService : IHostedService, IDisposable
             
             if (parts.Length != 3) continue; 
             
-            if (DateTime.TryParse(parts[0], out var timestamp) &&
-                double.TryParse(parts[1], out var longitude) &&
-                double.TryParse(parts[2], out var latitude))
+            if (DateTime.TryParse(parts[0], CultureInfo.InvariantCulture, DateTimeStyles.None, out var timestamp) &&
+                double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var longitude) &&
+                double.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out var latitude) &&
+                timestamp > afterTimestamp) // Only consider entries newer than the provided timestamp
             {
                 logs.Add(new OlmapLogEntry
                 {
