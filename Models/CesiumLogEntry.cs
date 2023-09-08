@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace MapLogger
 {
-    public class LogEntry
+    public class CesiumLogEntry
     {
         public int Id { get; set; }
+        public DateTime Timestamp { get; set; }
         public double Longitude { get; set; }
         public double Latitude { get; set; }
-        public DateTime Timestamp { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace MapLogger
             this.Configuration = configuration;
         }
 
-        public DbSet<LogEntry> LogEntries { get; set; }
+        public DbSet<CesiumLogEntry> cesiumLogEntries { get; set; }
+        public DbSet<OlmapLogEntry> olmapLogEntries { get; set; }
     }
 }

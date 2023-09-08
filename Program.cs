@@ -13,6 +13,8 @@ builder.Configuration
 builder.Services.AddDbContext<LogDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddHostedService<CesiumLogUpdateService>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
