@@ -29,3 +29,14 @@
 /home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/obj/Debug/net7.0/MapLogger.pdb
 /home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/obj/Debug/net7.0/MapLogger.genruntimeconfig.cache
 /home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/obj/Debug/net7.0/ref/MapLogger.dll
+/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/Humanizer.dll
+/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/Microsoft.EntityFrameworkCore.dll
+/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/Microsoft.EntityFrameworkCore.Abstractions.dll
+/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/Microsoft.EntityFrameworkCore.Design.dll
+/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/Microsoft.EntityFrameworkCore.Relational.dll
+/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/Microsoft.Extensions.DependencyModel.dll
+/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/Mono.TextTemplating.dll
+/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/Npgsql.dll
+/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
+/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/System.CodeDom.dll
+/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/obj/Debug/net7.0/MapLogger.csproj.CopyComplete
