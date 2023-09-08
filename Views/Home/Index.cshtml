@@ -20,8 +20,9 @@
     <div id="cesiumContainer"></div>
 
     <script>
-        console.log("Explicit function call");
+        document.addEventListener('DOMContentLoaded', (event) => {
         initMaps("@ViewData["CesiumToken"]");
+        });
     </script>
 
 </body>

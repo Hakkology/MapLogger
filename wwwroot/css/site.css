@@ -18,12 +18,12 @@ html, body {
 
 #cesiumContainer {
   width: calc(50% - 10px);
-  height: 85vh;
+  height: 80vh;
   border-left: 20px solid white 
 }
 
 #cesiumContainer .cesium-widget canvas {
   width: 100% !important;
-  height: 85vh;
+  height: 82vh;
   display: block;
 }

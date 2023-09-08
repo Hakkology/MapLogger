@@ -6,12 +6,12 @@ namespace MapLogger.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly IWebHostEnvironment _env;
     private readonly IConfiguration _configuration;
 
-    public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
+    public HomeController(IWebHostEnvironment env, IConfiguration configuration)
     {
-        _logger = logger;
+        _env = env;
         _configuration = configuration;
     }
 
@@ -26,6 +26,16 @@ public class HomeController : Controller
     {
         return View();
     }
+
+    [HttpPost]
+    public ActionResult CoordinateLogger(string type, double longitude, double latitude)
+    {
+        var timestamp = DateTime.UtcNow;
+        var logString = $"{timestamp},{longitude},{latitude}\n";
+        System.IO.File.AppendAllText(_env.ContentRootPath + $"/{type}.txt", logString);
+        return Json(new { Success = true });
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
