@@ -38,6 +38,11 @@
     Bunu nasıl yapacağın önemli değil, sadece bizim nasıl çalıştıracağımızı tarif etmeni bekleriz. 
     Bu uygulamanın çok kullanıcılı olduğunu ve aynı anda çok fazla loglama isteğinin sunucuya geleceğini ve 
     her birinin text dosyaya loglanması gerektiğini varsayalım.
+-   Ajax ve homecontrollera eklediğim post işlemi ile tüm veriler txt filelarda loglanıyor.
+
+-   Animasyon süreleri yüzünden çift renderlara sorunu düzeltildi, isAnimating flagi eklendi.
+-   Sol tuş tıklama çok iyi çalışmıyor. Bakılacak.
+    ---------------------
 */
 
 /*
