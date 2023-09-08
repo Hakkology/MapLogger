@@ -2,6 +2,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 #map-container, #cesiumContainer {
@@ -10,13 +11,19 @@ html, body {
 }
 
 #map-container {
-  width: 50%;
+  width: calc(50% - 10px);
   height: 85vh;
-  margin-left: 20px;
+  margin-left: 10px;
 }
 
 #cesiumContainer {
-  width: calc(50% - 20px);
-  height: 80vh;
-  border-left: 40px solid white
+  width: calc(50% - 10px);
+  height: 85vh;
+  border-left: 20px solid white 
+}
+
+#cesiumContainer .cesium-widget canvas {
+  width: 100% !important;
+  height: 85vh;
+  display: block;
 }

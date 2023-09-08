@@ -20,8 +20,8 @@
     <div id="cesiumContainer"></div>
 
     <script>
-        var cesiumAccessToken = "@ViewData["CesiumToken"]";
-        initMaps(cesiumAccessToken);
+        console.log("Explicit function call");
+        initMaps("@ViewData["CesiumToken"]");
     </script>
 
 </body>

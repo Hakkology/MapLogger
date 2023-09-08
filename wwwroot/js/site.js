@@ -18,40 +18,62 @@ function initMaps(cesiumAccessToken){
         view: openlayersView
     });
 
-    var cesiumViewer = new Cesium.Viewer('cesiumContainer', {
-        imageryProvider: new Cesium.IonImageryProvider({ assetId: 3812 }),
-        terrainProvider: Cesium.createWorldTerrain(),
-        animation: false,
-        baseLayerPicker: false,
-        geocoder: false,
-        homeButton: false,
-        sceneModePicker: false,
-        timeline: false,
-        navigationHelpButton: false,
-        vrButton: false,
-        initialViewRectangle: Cesium.Rectangle.fromDegrees(32.8597 - 0.1, 39.9208 - 0.1, 32.8597 + 0.1, 39.9208 + 0.1)
+    viewer.forceResize();
+  
+    // Initial position.
+    viewer.camera.flyTo({
+      destination: Cesium.Cartesian3.fromDegrees(32.8597, 39.9208, 1800),
+      orientation: {
+        heading: Cesium.Math.toRadians(0.0),
+        pitch: Cesium.Math.toRadians(-90.0),
+      }
     });
 
+    // Grab the coords for olmap and transfer to cesium viewer.
     olMap.on('click', function(evt) {
         var coords = ol.proj.toLonLat(evt.coordinate);
-        cesiumViewer.camera.flyTo({destination: Cesium.Cartesian3.fromDegrees(coords[0], coords[1], 1500)});
-        console.log(coords);
-        // Burada sunucuya istek atıp koordinatları loglayabilirsiniz
+        viewer.camera.flyTo({
+            destination: Cesium.Cartesian3.fromDegrees(coords[0], coords[1], 1800)
+        });
     });
-
-    var handler = new Cesium.ScreenSpaceEventHandler(cesiumViewer.scene.canvas);
+    
+    //Grab the coords for cesium viewer and transfer to olmap.
+    var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
     handler.setInputAction(function(movement) {
-        var pickedFeature = cesiumViewer.scene.pick(movement.position);
-        if (pickedFeature) {
-            var cartesian = cesiumViewer.scene.pickPosition(movement.position);
-            var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-            var longitude = Cesium.Math.toDegrees(cartographic.longitude);
-            var latitude = Cesium.Math.toDegrees(cartographic.latitude);
-            
-            openlayersView.animate({center: ol.proj.fromLonLat([longitude, latitude])});
-            console.log([longitude, latitude]);
-            // Rest of your code...
+        var pickedLocation = viewer.scene.pick(movement.position);
+        if (!Cesium.defined(pickedLocation)) {
+            var cartesian = viewer.scene.pickPosition(movement.position);
+            if(Cesium.defined(cartesian)){
+                var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+                var longitude = Cesium.Math.toDegrees(cartographic.longitude);
+                var latitude = Cesium.Math.toDegrees(cartographic.latitude);
+                
+                openlayersView.animate({center: ol.proj.fromLonLat([longitude, latitude])});
+                viewer.camera.flyTo({
+                    destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, 1800)
+                });
+            }
         }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
     
+
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+        terrainProvider: Cesium.createWorldTerrain(),
+        animation: false,            // Disable animation widget
+        baseLayerPicker: false,      // Disable the base layer picker widget
+        fullscreenButton: false,     // Disable the full screen button
+        geocoder: false,             // Disable the geocoder widget
+        homeButton: false,           // Disable the home button
+        infoBox: false,              // Disable the info box widget
+        sceneModePicker: false,      // Disable the scene mode picker widget
+        selectionIndicator: false,   // Disable selection indicator
+        timeline: false,             // Disable timeline widget
+        navigationHelpButton: false, // Disable navigation help button
+        navigationInstructionsInitiallyVisible: false,  // Don't show navigation instructions
+        scene3DOnly: true,           // Render only in 3D to optimize performance
+        skyAtmosphere: false,        // Disable sky and atmosphere model
+        shouldAnimate: true,         // Keep animation loop running for smooth experience
+      });    
+
+
 }
