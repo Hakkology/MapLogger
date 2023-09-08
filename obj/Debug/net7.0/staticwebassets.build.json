@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "xMOH/bjs0cqUk/xxS14gsTGVwtQD1cOQGW6a7UnLtfA=",
+  "Hash": "LA15c8fy/08+lf5xTz09Xt9Tqg9IDbGUHwTzC7iMzKc=",
   "Source": "MapLogger",
   "BasePath": "_content/MapLogger",
   "Mode": "Default",
@@ -85,12 +85,12 @@
       "OriginalItemSpec": "wwwroot/favicon.ico"
     },
     {
-      "Identity": "/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/wwwroot/js/site.js",
+      "Identity": "/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/wwwroot/js/elevation.js",
       "SourceId": "MapLogger",
       "SourceType": "Discovered",
       "ContentRoot": "/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/wwwroot/",
       "BasePath": "_content/MapLogger",
-      "RelativePath": "js/site.js",
+      "RelativePath": "js/elevation.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -99,7 +99,24 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/js/site.js"
+      "OriginalItemSpec": "wwwroot/js/elevation.js"
+    },
+    {
+      "Identity": "/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/wwwroot/js/initMaps.js",
+      "SourceId": "MapLogger",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/wwwroot/",
+      "BasePath": "_content/MapLogger",
+      "RelativePath": "js/initMaps.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/initMaps.js"
     },
     {
       "Identity": "/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css",

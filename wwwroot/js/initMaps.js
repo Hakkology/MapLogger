@@ -1,7 +1,4 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿// Write your JavaScript code.
 
 function initMaps(cesiumAccessToken){
 
@@ -53,32 +50,31 @@ function initMaps(cesiumAccessToken){
 
     // Grab the coords for olmap and transfer to cesium viewer by left click.
     olMap.on('click', function(evt) {
-        if (!isAnimating) {
-            var coords = ol.proj.toLonLat(evt.coordinate);
-            isAnimating = true;
-            openlayersView.animate({center: ol.proj.fromLonLat([coords[0], coords[1]]), duration: 1000}, function() {
-                viewer.camera.flyTo({
-                    destination: Cesium.Cartesian3.fromDegrees(coords[0], coords[1], 1800),
-                    complete: function() {
-                        isAnimating = false;
-                    }
-                });
-            });
-        }
-    });
 
-    // Grab the coords for olmap and transfer to cesium viewer by drag.
-    olMap.on('moveend', function() {
-        if (isAnimating) {
-            var coords = ol.proj.toLonLat(openlayersView.getCenter());
-            isAnimating = true;
+        var coords = ol.proj.toLonLat(evt.coordinate);
+        LogCoordstoServer("olmap", coords[0], coords[1]);
+        isAnimating = true;
+        openlayersView.animate({center: ol.proj.fromLonLat([coords[0], coords[1]]), duration: 1000}, function() {
             viewer.camera.flyTo({
                 destination: Cesium.Cartesian3.fromDegrees(coords[0], coords[1], 1800),
                 complete: function() {
                     isAnimating = false;
                 }
             });
-        }
+        });
+    });
+
+    // Grab the coords for olmap and transfer to cesium viewer by drag move.
+    olMap.on('moveend', function() {
+        var coords = ol.proj.toLonLat(openlayersView.getCenter());
+        LogCoordstoServer("olmap", coords[0], coords[1]);
+        isAnimating = true;
+        viewer.camera.flyTo({
+            destination: Cesium.Cartesian3.fromDegrees(coords[0], coords[1], 1800),
+            complete: function() {
+                isAnimating = false;
+            }
+        });
     });
     
     //Grab the coords for cesium viewer and transfer to olmap by drag move.
@@ -87,6 +83,7 @@ function initMaps(cesiumAccessToken){
             const cameraPosition = viewer.camera.positionCartographic;
             const longitude = Cesium.Math.toDegrees(cameraPosition.longitude);
             const latitude = Cesium.Math.toDegrees(cameraPosition.latitude);
+            LogCoordstoServer("cesium", longitude, latitude);
             isAnimating = true;
             openlayersView.animate({center: ol.proj.fromLonLat([longitude, latitude])});
         }
@@ -103,6 +100,7 @@ function initMaps(cesiumAccessToken){
                 var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
                 var longitude = Cesium.Math.toDegrees(cartographic.longitude);
                 var latitude = Cesium.Math.toDegrees(cartographic.latitude);
+                LogCoordstoServer("cesium", longitude, latitude);
                 isAnimating = true;
                 viewer.camera.flyTo({
                     destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, 1800),
@@ -113,10 +111,9 @@ function initMaps(cesiumAccessToken){
             }
         }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-    
 }
 
-function logCoordinateToServer(type, longitude, latitude) {
+function LogCoordstoServer(type, longitude, latitude) {
     $.ajax({
         url: '/Home/CoordinateLogger',
         type: 'POST',
