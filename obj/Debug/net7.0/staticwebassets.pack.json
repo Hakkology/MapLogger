@@ -13,10 +13,6 @@
       "PackagePath": "staticwebassets/favicon.ico"
     },
     {
-      "Id": "/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/wwwroot/js/elevation.js",
-      "PackagePath": "staticwebassets/js/elevation.js"
-    },
-    {
       "Id": "/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/wwwroot/js/initMaps.js",
       "PackagePath": "staticwebassets/js/initMaps.js"
     },

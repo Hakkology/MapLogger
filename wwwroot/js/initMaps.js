@@ -20,20 +20,20 @@ function initMaps(cesiumAccessToken){
     // cesium init
     const viewer = new Cesium.Viewer('cesiumContainer', {
         terrainProvider: Cesium.createWorldTerrain(),
-        animation: false,            // Disable animation widget
-        baseLayerPicker: false,      // Disable the base layer picker widget
-        fullscreenButton: false,     // Disable the full screen button
-        geocoder: false,             // Disable the geocoder widget
-        homeButton: false,           // Disable the home button
-        infoBox: false,              // Disable the info box widget
-        sceneModePicker: false,      // Disable the scene mode picker widget
-        selectionIndicator: false,   // Disable selection indicator
-        timeline: false,             // Disable timeline widget
-        navigationHelpButton: false, // Disable navigation help button
-        navigationInstructionsInitiallyVisible: false,  // Don't show navigation instructions
-        scene3DOnly: true,           // Render only in 3D to optimize performance
-        skyAtmosphere: false,        // Disable sky and atmosphere model
-        shouldAnimate: true,         // Keep animation loop running for smooth experience
+        animation: false,            
+        baseLayerPicker: false,     
+        fullscreenButton: false,    
+        geocoder: false,            
+        homeButton: false,         
+        infoBox: false,             
+        sceneModePicker: false,    
+        selectionIndicator: false,  
+        timeline: false,           
+        navigationHelpButton: false, 
+        navigationInstructionsInitiallyVisible: false, 
+        scene3DOnly: true,          
+        skyAtmosphere: false,    
+        shouldAnimate: true,        
         pickTranslucentDepth: true,
     });    
 
@@ -54,10 +54,13 @@ function initMaps(cesiumAccessToken){
         var coords = ol.proj.toLonLat(evt.coordinate);
         console.log('Open Layer Map Clicked Coordinates:', coords[0], coords[1]);
         LogCoordstoServer("olmap", coords[0], coords[1]);
+        var cartographic = Cesium.Cartographic.fromDegrees(coords[0], coords[1]);
+        var elevation = cartographic.elevation + 1000;
+
         isAnimating = true;
         openlayersView.animate({center: ol.proj.fromLonLat([coords[0], coords[1]]), duration: 1000}, function() {
             viewer.camera.flyTo({
-                destination: Cesium.Cartesian3.fromDegrees(coords[0], coords[1], 1800),
+                destination: Cesium.Cartesian3.fromDegrees(coords[0], coords[1], elevation) ,
                 complete: function() {
                     isAnimating = false;
                 }
@@ -65,32 +68,47 @@ function initMaps(cesiumAccessToken){
         });
     });
 
+
     // Grab the coords for olmap and transfer to cesium viewer by drag move.
     olMap.on('moveend', function() {
         var coords = ol.proj.toLonLat(openlayersView.getCenter());
         console.log('Open Layer Map Clicked Coordinates:', coords[0], coords[1]);
         LogCoordstoServer("olmap", coords[0], coords[1]);
+        var cartographic = Cesium.Cartographic.fromDegrees(coords[0], coords[1]);
+        var elevation = cartographic.elevation + 1000;
+            
         isAnimating = true;
         viewer.camera.flyTo({
-            destination: Cesium.Cartesian3.fromDegrees(coords[0], coords[1], 1800),
+            destination: Cesium.Cartesian3.fromDegrees(coords[0], coords[1], elevation),
             complete: function() {
                 isAnimating = false;
             }
         });
-    });
+    }); 
+
     
-    //Grab the coords for cesium viewer and transfer to olmap by drag move.
+    // Grab the coords for cesium viewer and transfer to olmap by drag move.
     viewer.camera.moveEnd.addEventListener(function() {
         if (!isAnimating) {
             const cameraPosition = viewer.camera.positionCartographic;
             const longitude = Cesium.Math.toDegrees(cameraPosition.longitude);
             const latitude = Cesium.Math.toDegrees(cameraPosition.latitude);
-            console.log('Cesium View Clicked Coordinates:', longitude, latitude);
-            LogCoordstoServer("cesium", longitude, latitude);
+            const cameraElevation = cameraPosition.height + 1000;  
+            
+            viewer.camera.flyTo({
+                destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, cameraElevation),
+                duration: 0  
+            });
+
             isAnimating = true;
             openlayersView.animate({center: ol.proj.fromLonLat([longitude, latitude])});
+
+            console.log('Cesium View Moved to Coordinates:', longitude, latitude);
+            LogCoordstoServer("cesium", longitude, latitude);
         }
     });
+
+
 
     //Grab the coords for cesium viewer and transfer to olmap by left click.
     var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
@@ -103,11 +121,12 @@ function initMaps(cesiumAccessToken){
                 var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
                 var longitude = Cesium.Math.toDegrees(cartographic.longitude);
                 var latitude = Cesium.Math.toDegrees(cartographic.latitude);
+                var elevation = cartographic.elevation + 1000;
                 console.log('Cesium View Clicked Coordinates:', longitude, latitude);
                 LogCoordstoServer("cesium", longitude, latitude);
                 isAnimating = true;
                 viewer.camera.flyTo({
-                    destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, 1800),
+                    destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, elevation),
                     complete: function() {
                         isAnimating = false;
                     }

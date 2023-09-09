@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "LA15c8fy/08+lf5xTz09Xt9Tqg9IDbGUHwTzC7iMzKc=",
+  "Hash": "PWjt/0ieWGG/IPZpHB03ZN6Bc5Rs3NTtQDRde0SnzIw=",
   "Source": "MapLogger",
   "BasePath": "_content/MapLogger",
   "Mode": "Default",
@@ -83,23 +83,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/favicon.ico"
-    },
-    {
-      "Identity": "/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/wwwroot/js/elevation.js",
-      "SourceId": "MapLogger",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/wwwroot/",
-      "BasePath": "_content/MapLogger",
-      "RelativePath": "js/elevation.js",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/js/elevation.js"
     },
     {
       "Identity": "/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/wwwroot/js/initMaps.js",
