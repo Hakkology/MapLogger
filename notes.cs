@@ -23,15 +23,15 @@
 
 -   OL ve cesium maplar eventlistenerlarla birbirlerini dinleyecek şekilde ayarlandı.
 -   Sol tuşla tıklama çok iyi çalışmıyor ama kaydırarak gitme gayet iyi.
--   Yükseklik 1800 olarak ayarlandı. Bazı koşullarda yer altına inebilir, mevcut elevationın üstüne offset eklenebilir mi ?
+-   Her fonksiyonda terrain provider çağrılıyor, cartography eliptik yüksekliği verirken terrain yüksekliği için terrain provider gerekiyor.
+-   Terrain provider üzerinden func ile ground elevation çekip üstüne 1000 metre ekliyoruz, bu sayede camera elevation da çözülmüş oluyor.
     ---------------------
 
     Sağdaki (Cesium) haritasında herhangi bir yere tıkladığınızda ise bu sefer soldaki haritanın merkezi o noktaya kaydırılsın ve 
     bu coğrafi koordinatlar konsola loglansın.
 
--   Cesium haritasında herhangi bir yere tıklandığında veya taşındığında olmapsın merkezi o noktaya kaydırılıyor.
--   Animasyon süreleri yüzünden çift renderlara sorunu düzeltildi, isAnimating flagi eklendi.
--   Sol tuş tıklama çok iyi çalışmıyor. Bakılacak.
+-   Cesium haritasında herhangi bir yere tıklandığında veya fare ile taşındığında olmapsın merkezi o noktaya kaydırılıyor.
+-   Animasyon süreleri yüzünden çift renderlama sorunu düzeltildi, isAnimating flagi eklendi.
     ---------------------
 
     Her iki harita tıklamaları da bir yandan sunucu tarafında bir uygulamaya gönderilsin ve tek bir text dosyasına loglansın. 
@@ -40,9 +40,10 @@
     her birinin text dosyaya loglanması gerektiğini varsayalım.
 
 -   Ajax ve homecontrollera eklediğim post işlemi ile tüm veriler txt filelarda loglanıyor.
+-   cesium ve openlayer map için ayrı txt dosyaları açıldı, bu txt dosyaları haritalar üzerindeki tüm tıklamaları logluyor.
 -   Animasyon süreleri yüzünden çift renderlara sorunu düzeltildi, isAnimating flagi eklendi.
--   Sol tuş tıklama çok iyi çalışmıyor. Bakılacak.
 -   Db connection sağlandı. Her 5 dk'da bir son timestampin üstünde olan tüm entryler dbye loglanıyor.
+-   Bu şekilde çok kullanıcılı bir uygulamanın sürekli dbye bağlı kalmasındansa log edilen txt dosyalarının parça parça belirli sürelerle db ye gönderilmesi.
     ---------------------
 */
 
