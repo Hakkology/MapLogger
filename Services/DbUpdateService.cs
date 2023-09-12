@@ -27,12 +27,15 @@ namespace MapLogger
                     Latitude = double.Parse(parts[2]),
                     Maptype = parts[3]
                 };
-
+                Console.WriteLine("Correctly saved on db.");
                 _context.LogEntries.Add(logEntry);
                 _context.SaveChanges();
+
                 return true;
             }
+            Console.WriteLine("Not working on db saving");
             return false;
+            
         }
     }
 }

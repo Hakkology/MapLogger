@@ -4,6 +4,7 @@ function initMaps(cesiumAccessToken){
 
     Cesium.Ion.defaultAccessToken = cesiumAccessToken;
     let isAnimating = false; // for animation controls, testing...
+    let isInitializing = true; // to avoid excessive logging...
 
     // ol init
     var openlayersView = new ol.View({
@@ -41,22 +42,27 @@ function initMaps(cesiumAccessToken){
   
     // Initial position.
     viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(32.8597, 39.9208, 1800),
-      orientation: {
-        heading: Cesium.Math.toRadians(0.0),
-        pitch: Cesium.Math.toRadians(-90.0),
-      }
+        destination: Cesium.Cartesian3.fromDegrees(32.8597, 39.9208, 1800),
+        orientation: {
+          heading: Cesium.Math.toRadians(0.0),
+          pitch: Cesium.Math.toRadians(-90.0),
+        },
+        complete: function() {
+          isInitializing = false;
+        }
     });
 
     // Grab the coords for olmap and transfer to cesium viewer by left click.
     olMap.on('click', function(evt) {
-
+        if (isInitializing) {
+            return;
+        }
         var coords = ol.proj.toLonLat(evt.coordinate);
-        console.log('Open Layer Map Clicked Coordinates:', coords[0], coords[1]);
-        LogCoordstoServer("olmap", coords[0], coords[1]);
-
         var terrainSamplePosition = Cesium.Cartographic.fromDegrees(coords[0], coords[1]);
         var terrainProvider = viewer.terrainProvider;
+
+        console.log('Open Layer Map Clicked Coordinates:', coords[0], coords[1]);
+        LogCoordstoServer("olmap", coords[0], coords[1]);
 
         Cesium.sampleTerrainMostDetailed(terrainProvider, [terrainSamplePosition]).then(function(samples) {
             var groundElevation = samples[0].height;
@@ -69,6 +75,7 @@ function initMaps(cesiumAccessToken){
                     destination: Cesium.Cartesian3.fromDegrees(coords[0], coords[1], cameraElevation),
                     complete: function() {
                         isAnimating = false;
+
                     }
                 });
             });
@@ -77,11 +84,14 @@ function initMaps(cesiumAccessToken){
 
     // Grab the coords for olmap and transfer to cesium viewer by drag move.
     olMap.on('moveend', function() {
+        if (isInitializing) {
+            return;
+        }
         var coords = ol.proj.toLonLat(openlayersView.getCenter());
+        var terrainSamplePosition = Cesium.Cartographic.fromDegrees(coords[0], coords[1]);
+
         console.log('Open Layer Map Clicked Coordinates:', coords[0], coords[1]);
         LogCoordstoServer("olmap", coords[0], coords[1]);
-        
-        var terrainSamplePosition = Cesium.Cartographic.fromDegrees(coords[0], coords[1]);
         var terrainProvider = viewer.terrainProvider;
 
         Cesium.sampleTerrainMostDetailed(terrainProvider, [terrainSamplePosition]).then(function(samples) {
@@ -89,11 +99,13 @@ function initMaps(cesiumAccessToken){
             var cameraElevation = groundElevation + 1000;
 
             //console.log('Sampled Ground Elevation:', groundElevation);
+
             isAnimating = true;
             viewer.camera.flyTo({
                 destination: Cesium.Cartesian3.fromDegrees(coords[0], coords[1], cameraElevation),
                 complete: function() {
                     isAnimating = false;
+
                 }
             });
         });
@@ -101,6 +113,9 @@ function initMaps(cesiumAccessToken){
     
     // Grab the coords for cesium viewer and transfer to olmap by drag move.
     viewer.camera.moveEnd.addEventListener(function() {
+        if (isInitializing) {
+            return;
+        }
         if (!isAnimating) {
             const cameraPosition = viewer.camera.positionCartographic;
             const longitude = Cesium.Math.toDegrees(cameraPosition.longitude);
@@ -108,21 +123,20 @@ function initMaps(cesiumAccessToken){
 
             var terrainSamplePosition = Cesium.Cartographic.fromDegrees(longitude, latitude);
             var terrainProvider = viewer.terrainProvider;
+
+            console.log('Cesium View Moved to Coordinates:', longitude, latitude);
+            LogCoordstoServer("cesium", longitude, latitude);
             
             Cesium.sampleTerrainMostDetailed(terrainProvider, [terrainSamplePosition]).then(function(samples) {
                 const groundElevation = samples[0].height;
                 const cameraElevation = groundElevation + 1000;
                 //console.log('Sampled Ground Elevation:', groundElevation);
-
                 viewer.camera.flyTo({
                     destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, cameraElevation),
                     duration: 0  
                 });
 
                 openlayersView.animate({center: ol.proj.fromLonLat([longitude, latitude])});
-
-                console.log('Cesium View Moved to Coordinates:', longitude, latitude);
-                LogCoordstoServer("cesium", longitude, latitude);
             });
         }
     });
@@ -133,6 +147,9 @@ function initMaps(cesiumAccessToken){
     // Grab the coords for cesium viewer and transfer to olmap by left click.
     var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
     handler.setInputAction(function(movement) {
+        if (isInitializing) {
+            return;
+        }
         if (!isAnimating) {
             var location = viewer.camera.getPickRay(movement.position);
             var cartesian = viewer.scene.globe.pick(location, viewer.scene);
@@ -142,6 +159,9 @@ function initMaps(cesiumAccessToken){
                 var longitude = Cesium.Math.toDegrees(cartographic.longitude);
                 var latitude = Cesium.Math.toDegrees(cartographic.latitude);
 
+                console.log('Cesium View Clicked Coordinates:', longitude, latitude);
+                LogCoordstoServer("cesium", longitude, latitude);
+
                 var terrainSamplePosition = Cesium.Cartographic.fromDegrees(longitude, latitude);
                 var terrainProvider = viewer.terrainProvider;
                 
@@ -150,12 +170,11 @@ function initMaps(cesiumAccessToken){
                     const cameraElevation = groundElevation + 1000; 
                     //console.log('Sampled Ground Elevation:', groundElevation);
 
-                    console.log('Cesium View Clicked Coordinates:', longitude, latitude);
-                    LogCoordstoServer("cesium", longitude, latitude);
                     isAnimating = true;
                     viewer.camera.flyTo({
                         destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, cameraElevation),
                         complete: function() {
+
                             isAnimating = false;
                         }
                     });
@@ -173,7 +192,8 @@ function LogCoordstoServer(type, longitude, latitude) {
         data: {
             type: type,
             longitude: longitude,
-            latitude: latitude
+            latitude: latitude,
+            
         },
         success: function(response) {
             console.log('Logged successfully!', response);

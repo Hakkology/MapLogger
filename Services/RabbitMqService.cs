@@ -8,6 +8,8 @@ namespace MapLogger
     public class RabbitMqService
     {
         private readonly string _hostname;
+        private IConnection _connection;
+        private IModel _channel;
         private const string QueueName = "logQueue";
         private readonly DbUpdateService _dbUpdateService;
         private readonly LogUpdateService _logUpdateService;
@@ -17,82 +19,70 @@ namespace MapLogger
             _hostname = hostname;
             _dbUpdateService = dbUpdateService;
             _logUpdateService = logUpdateService;
+            InitializeRabbitMq();
+        }
+
+        private void InitializeRabbitMq()
+        {
+            var factory = new ConnectionFactory() { 
+                HostName = _hostname, 
+                Port = 5672,
+                UserName = "guest",
+                Password = "guest"
+            };
+
+            _connection = factory.CreateConnection();
+            _channel = _connection.CreateModel();
+            _channel.QueueDeclare(queue: QueueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
         }
 
         public void SendLogToRabbitMQ(string mapType, double longitude, double latitude)
         {
-            var factory = new ConnectionFactory() { 
-                HostName = _hostname, 
-                Port = 5672,
-                UserName = "guest",
-                Password = "guest"
-            };
-
             try
             {
-                using var connection = factory.CreateConnection();
-                using var channel = connection.CreateModel();
-
-                channel.QueueDeclare(queue: QueueName, 
-                                    durable: false, 
-                                    exclusive: false, 
-                                    autoDelete: false, 
-                                    arguments: null);
-
                 var timestamp = DateTime.UtcNow;
                 var message = $"{timestamp},{longitude},{latitude},{mapType}";
                 var body = Encoding.UTF8.GetBytes(message);
 
-                channel.BasicPublish(exchange: "", 
-                                    routingKey: QueueName, 
-                                    basicProperties: null, 
-                                    body: body);
+                _channel.BasicPublish(exchange: "", routingKey: QueueName, basicProperties: null, body: body);
             }
             catch (Exception ex)
             {
-                
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"Error sending log to RabbitMQ: {ex.Message}");
             }
-
         }
 
         public void ConsumeLogs()
         {
-            var factory = new ConnectionFactory() { 
-                HostName = _hostname, 
-                Port = 5672,
-                UserName = "guest",
-                Password = "guest"
-            };
-            using var connection = factory.CreateConnection();
-            using var channel = connection.CreateModel();
-
-            channel.QueueDeclare(queue: QueueName, 
-                                durable: false, 
-                                exclusive: false, 
-                                autoDelete: false, 
-                                arguments: null);
-
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, ea) =>
-            {
-                var body = ea.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
-
-                if (_dbUpdateService.SaveLogtoDb(message))
+            var consumer = new EventingBasicConsumer(_channel);
+                consumer.Received += (model, ea) =>
                 {
-                    _logUpdateService.LogInput(message);
-                }
+                    var body = ea.Body.ToArray();
+                    var message = Encoding.UTF8.GetString(body);
+                    try
+                    {
+                        if (_dbUpdateService.SaveLogtoDb(message))
+                        {
+                            _logUpdateService.LogInput(message);
+                            _channel.BasicAck(ea.DeliveryTag, multiple: false);
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine($"Failed to process message: {ex.Message}");
+                    }
+                };
 
-                if(channel.MessageCount(QueueName) > 1000)
-                {
-                    Console.WriteLine("Too much load!");
-                }
-            };
+            _channel.BasicConsume(queue: QueueName, autoAck: false, consumer: consumer);
+        }
 
-            channel.BasicConsume(queue: QueueName, 
-                                autoAck: true, 
-                                consumer: consumer);
+        public void Dispose()
+        {
+            _channel?.Close();
+            _connection?.Close();
         }
     }
 }
+
+
+
