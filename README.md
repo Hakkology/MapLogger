@@ -29,3 +29,10 @@ The purpose of this method is to implement a logging mechanism with the database
 Such a feature would be necessary in a case where many users shall be utilizing this program at the same time, if need be.
 Cleaning the logger txt files for previously logged entries might be necessary in order to bring more performance to db logging operations.
 
+-----------------------------------------
+
+Made adjustments to logging model for db saves. Similarly, logging mechanism is squeezed onto one txt file.
+Utilized RabbitMQ for cases where there are too many Users to deal with. With rabbitmq, it is possible to find solutions to problems and spot if there is any congestion or overloading due to requests.
+Coordinates are now saved on db in an asynchronous manner. Logs are only written if db save was successful.
+Divided services for logging, db add and rabbitmq add/consume utilities.
+
