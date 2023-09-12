@@ -40,3 +40,4 @@
 /home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
 /home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/System.CodeDom.dll
 /home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/obj/Debug/net7.0/MapLogger.csproj.CopyComplete
+/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/bin/Debug/net7.0/RabbitMQ.Client.dll

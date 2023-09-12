@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "TKe6HZ+v8RPjaV97aN/l9+4DSiUQfna90yzchZuzyqxdExVvBj+ua7s0LD3DZsnmuRWCM9sTnRGFa2dK5HzSpw==",
+  "dgSpecHash": "eLWCxJm/4NQq1wEZ6PKpJJUavKmy7A6b1j6gVLFme6t0UY+rb3+ZAFC9Jq5fsqWRpFd7dOycsYHEZp9dBRs/5A==",
   "success": true,
   "projectFilePath": "/home/hakan/Desktop/Hakan/Programming/C#/Repositories/MapLogger/MapLogger.csproj",
   "expectedPackageFiles": [
@@ -25,9 +25,12 @@
     "/home/hakan/.nuget/packages/mono.texttemplating/2.2.1/mono.texttemplating.2.2.1.nupkg.sha512",
     "/home/hakan/.nuget/packages/npgsql/7.0.4/npgsql.7.0.4.nupkg.sha512",
     "/home/hakan/.nuget/packages/npgsql.entityframeworkcore.postgresql/7.0.4/npgsql.entityframeworkcore.postgresql.7.0.4.nupkg.sha512",
+    "/home/hakan/.nuget/packages/rabbitmq.client/6.5.0/rabbitmq.client.6.5.0.nupkg.sha512",
     "/home/hakan/.nuget/packages/system.codedom/4.4.0/system.codedom.4.4.0.nupkg.sha512",
+    "/home/hakan/.nuget/packages/system.memory/4.5.5/system.memory.4.5.5.nupkg.sha512",
     "/home/hakan/.nuget/packages/system.text.encodings.web/7.0.0/system.text.encodings.web.7.0.0.nupkg.sha512",
-    "/home/hakan/.nuget/packages/system.text.json/7.0.0/system.text.json.7.0.0.nupkg.sha512"
+    "/home/hakan/.nuget/packages/system.text.json/7.0.0/system.text.json.7.0.0.nupkg.sha512",
+    "/home/hakan/.nuget/packages/system.threading.channels/7.0.0/system.threading.channels.7.0.0.nupkg.sha512"
   ],
   "logs": []
 }

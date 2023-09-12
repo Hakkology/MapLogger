@@ -6,13 +6,14 @@ namespace MapLogger.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly IWebHostEnvironment _env;
     private readonly IConfiguration _configuration;
+    private readonly RabbitMqService _rabbitMqService;
 
-    public HomeController(IWebHostEnvironment env, IConfiguration configuration)
+
+    public HomeController(IConfiguration configuration, RabbitMqService rabbitMqService)
     {
-        _env = env;
         _configuration = configuration;
+        _rabbitMqService = rabbitMqService;
     }
 
     public IActionResult Index()
@@ -30,10 +31,15 @@ public class HomeController : Controller
     [HttpPost]
     public ActionResult CoordinateLogger(string type, double longitude, double latitude)
     {
-        var timestamp = DateTime.UtcNow;
-        var logString = $"{timestamp},{longitude},{latitude}\n";
-        System.IO.File.AppendAllText(_env.ContentRootPath + "/Loggers" + $"/{type}.txt", logString);
-        return Json(new { Success = true });
+        try
+        {
+            _rabbitMqService.SendLogToRabbitMQ(type, longitude, latitude);
+            return Json(new { Success = true });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { Success = false, Message = ex.Message });
+        }
     }
 
 

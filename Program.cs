@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllersWithViews();
+
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -14,12 +16,10 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 builder.Services.AddDbContext<LogDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddHostedService<CesiumLogUpdateService>();
-builder.Services.AddHostedService<OlmapLogUpdateService>();
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
+builder.Services.AddTransient<DbUpdateService>();
+builder.Services.AddTransient<LogUpdateService>();
+builder.Services.AddScoped<RabbitMqService>();
+builder.Services.AddHostedService<RabbitMqConsumerService>();
 
 var app = builder.Build();
 
@@ -30,7 +30,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
