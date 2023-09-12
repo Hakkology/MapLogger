@@ -45,6 +45,13 @@
 -   Db connection sağlandı. Her 5 dk'da bir son timestampin üstünde olan tüm entryler dbye loglanıyor.
 -   Bu şekilde çok kullanıcılı bir uygulamanın sürekli dbye bağlı kalmasındansa log edilen txt dosyalarının parça parça belirli sürelerle db ye gönderilmesi.
     ---------------------
+
+Düzeltmeler:
+-   İki ayrı model yerine tek ayrı modele "tip" tagını ekledim, bu sayede hangi haritadan verinin geldiğini loglayabiliyoruz. Ayrıca iki ayrı text dosyası yerine belirttiğiniz gibi maplogger.txt isimli tek bir txt file da loglayabiliriz.
+-   Önceden text dosyasından loglayıp toplu olarak sunucuya gönderiyordum. Artık noktaları direk sunucuya gönderiyorum ve her gönderilen başarılı nokta db'ye kaydediliyor.
+-   Çok kullanıcı olma ihtimaline karşın RabbitMQ kullandım, bu sayede çok ileti aldığımız durumlarda consumer sayısını artırabilir ve uygulamayı ölçeklendirebiliriz.
+-   Veri tabanı kaydı ve loglama özelliklerini farklı servislere atadım ki daha modüler bir yapı kullanabilelim.
+
 */
 
 /*
