@@ -25,9 +25,10 @@ This model is reflected onto a postgresql database instance made with elephantsq
 If the timestamp of an entry is higher than the previously signed timestamp (basically highest timestamp value for that moment), that entry is logged on the database once every 5 minutes.
 By doing so, every log information is collected and saved within specific time intervals. At the same time, we keep saving logs on the text file for both maps.
 
+- This part is now obsolete, data is being saved to db simultaneously with clicked coordinates and logged to txt file.
+
 The purpose of this method is to implement a logging mechanism with the database and reduce the connection load on the db. 
 Such a feature would be necessary in a case where many users shall be utilizing this program at the same time, if need be.
-Cleaning the logger txt files for previously logged entries might be necessary in order to bring more performance to db logging operations.
 
 -----------------------------------------
 
