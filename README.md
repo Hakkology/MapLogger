@@ -15,6 +15,8 @@ Once a location is finalized, that coordinate is shown by animation. To disable 
 Height map is currently set to 1.800 meters and im unable to request actual elevation levels for cesium map. 
 This occasionally causes problems where the camera is under the terrain level. Will look into this later.
 
+- This problem is solved by addition of terrain data to javascript side. The camera is automatically set to 1000 meters above the terrain of the requested coordinate.
+
 Both map clicks are also logged in a text file seperately made for each map, openlayermap and cesium viewer.
 Everytime user clicks on a coordinate, this coordinate is displayed on the console log.
 Additionally, timestamp, longitude and latitude information is logged on the text file for that type of map.
