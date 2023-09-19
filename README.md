@@ -1,8 +1,6 @@
 # MapLogger
 
-This is an application created in order to respond to a case.
-
-HTML page is divided into two parts showing an OpenLayerMap and a Cesium 3B Map Display widget.
+Maplogger page is divided into two parts showing an OpenLayerMap and a Cesium 3B Map Display widget.
 Openlayermap is on the left and Cesium 3B map is on the right.
 
 Initial location is set to be Kizilay/Ankara.
